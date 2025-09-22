@@ -95,6 +95,15 @@ const verifyOtp = async (req, res) => {
   }
 };
 
+/* updateProfile */
+const updateProfile = async (req, res) => {
+  try {
+    const { username, agreed, about } = req.body;
+    const userId = req.user.userId;
+    
+    const user = await User.findById(userId);
 
+  } catch (error) {}
+};
 
 export { sendOtp, verifyOtp, updateProfile };
