@@ -13,7 +13,7 @@ const messageSchema = new mongoose.Schema(
       required: true,
     },
     reciever: {
-      type: mongoose.Schema.ObjecId,
+      type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
     },
@@ -30,7 +30,7 @@ const messageSchema = new mongoose.Schema(
     reactions: [
       {
         user: {
-          type: mongoose.Schema.ObjecId,
+          type: mongoose.Schema.ObjectId,
           ref: "User",
         },
         emoji: String,
@@ -38,11 +38,11 @@ const messageSchema = new mongoose.Schema(
     ],
     messageStatus: {
       type: String,
-      defaule: "send",
+      default: "send",
     },
   },
   { timestamps: true }
 );
 
-const messageModel = mongoose.model("Message", messageSchema);
-export default messageModel;
+const Message = mongoose.model("Message", messageSchema);
+export default Message;

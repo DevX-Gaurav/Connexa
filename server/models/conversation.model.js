@@ -4,7 +4,7 @@ const conversionSchema = new mongoose.Schema(
   {
     participants: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
     lastMessage: {
-      type: mongoose.Schema.ObjecId,
+      type: mongoose.Schema.ObjectId,
       ref: "Message",
     },
     unreadCount: {
@@ -15,6 +15,6 @@ const conversionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const conversationModel = mongoose.model("Conversation", conversionSchema);
+const Conversation = mongoose.model("Conversation", conversionSchema);
 
-export default conversationModel;
+export default Conversation;
