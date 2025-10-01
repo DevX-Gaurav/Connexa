@@ -16,6 +16,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const corsOption = {
   origin: process.env.FRONTEND_URL,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 
@@ -34,6 +36,10 @@ app.use((req, res, next) => {
   req.io = io;
   req.socketUserMap = io.socketUserMap;
   next();
+});
+
+app.get("/", (req, res) => {
+  res.status(200).send("hello new request.");
 });
 
 /* routes */

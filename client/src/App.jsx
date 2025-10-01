@@ -1,14 +1,14 @@
-import React from 'react'
+import React from "react";
+import { Outlet } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
-    <div>
-      hello 
-      <div className="bg-red-500">hoi
-        <div className="bg-green-400 w-20 h-13">kaise hai</div>
-      </div>
-    </div>
-  )
-}
+    <>
+      <Outlet />
+      <Toaster reverseOrder={false} />
+    </>
+  );
+};
 
-export default App
+export default App;

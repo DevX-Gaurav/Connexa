@@ -32,9 +32,9 @@ const sendMessage = async (req, res) => {
         );
       }
       imageOrVideoUrl = uploadFile?.secure_url;
-      if (file.mineType.startwith("image")) {
+      if (file.mimetype.startswith("image")) {
         contentType = "image";
-      } else if (file.mineType.startwith("video")) contentType = "video";
+      } else if (file.mimetype.startswith("video")) contentType = "video";
       else {
         return response(
           res,
@@ -58,8 +58,13 @@ const sendMessage = async (req, res) => {
       messageStatus,
     });
     await message.save();
-    if (message?.content) conversation.lastMessage = message?.id;
-    conversation.unreadCount += 1;
+    if (message?.content) conversation.lastMessage = message?._id;
+    /* conversation.unreadCount += 1; */
+    conversation.unreadCount.set(
+      recieverId,
+      (conversation.unreadCount.get(recieverId) || 0) + 1
+    );
+    conversation.updatedAt = new Date();
     await conversation.save();
 
     const populateMessage = await Message.findOne(message?._id)
@@ -132,8 +137,11 @@ const getMessage = async (req, res) => {
       },
       { $set: { messageStatus: "read" } }
     );
-    conversation.unreadCount = 0;
+    // conversation.unreadCount = 0;
+    // await conversation.save();
+    conversation.unreadCount.set(userId, 0);
     await conversation.save();
+
     return response(res, 200, "message retrieved", messages);
   } catch (error) {
     console.error("Error: ", error);

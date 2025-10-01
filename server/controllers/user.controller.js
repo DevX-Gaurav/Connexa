@@ -102,6 +102,7 @@ const updateProfile = async (req, res) => {
   try {
     const { username, agreed, about } = req.body;
     const userId = req.user;
+    console.log("userId", userId);
 
     const user = await User.findById(userId);
     const file = req.file;
@@ -116,7 +117,6 @@ const updateProfile = async (req, res) => {
     if (agreed !== undefined)
       user.agreed = agreed; /* if (agreed) user.agreed = agreed; */
     if (about) user.about = about;
-
     await user.save();
     console.log("user: ", user);
     return response(res, 200, "profile updated successfully", user);
@@ -175,7 +175,7 @@ const getAllUserExceptMe = async (req, res) => {
 
         return {
           ...user,
-          conversation: conversation | null,
+          conversation: conversation || null,
         };
       })
     );
