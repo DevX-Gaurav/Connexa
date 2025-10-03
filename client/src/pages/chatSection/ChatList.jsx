@@ -72,63 +72,130 @@ const ChatList = ({ contacts }) => {
 
       <div className="overflow-y-auto h-[calc(100vh-120px)] ">
         {filteredContacts.map((contact) => (
+          // <motion.div
+          //   key={contact?._id}
+          //   onClick={() => setSelectedContact(contact)}
+          //   className={` p-3 flex items-center cursor-pointer${
+          //     theme === "dark"
+          //       ? selectedContact?._id === contact?._id
+          //         ? "bg-gray-700"
+          //         : " hover:bg-gray-800"
+          //       : selectedContact?._id === contact?._id
+          //       ? " bg-gray-200 "
+          //       : "hover:bg-gray-100"
+          //   }`}
+          // >
+
+          //   <img
+          //     src={contact?.avatar}
+          //     alt={contact?.avatar}
+          //     className="w-10 h-10 rounded-full object-cover"
+          //   />
+
+          //   <div className="ml-3 min-w-0 flex-1">
+          //     <div className="flex justify-between items-baseline">
+          //       <h2
+          //         className={`font-semibold capitalize ${
+          //           theme === "dark" ? "text-white" : "text-black"
+          //         }`}
+          //       >
+          //         {contact?.username}
+          //       </h2>
+          //       {contact?.conversation && (
+          //         <span
+          //           className={`text-xs ${
+          //             theme === "dark" ? "text-gray-400" : "text-gray-500"
+          //           }`}
+          //         >
+          //           {formatTimestamp(
+          //             contact?.conversation?.lastMessage?.createdAt
+          //           )}
+          //         </span>
+          //       )}
+          //     </div>
+          //     <div className="flex max-w-80 justify-between items-baseline">
+          //       <p
+          //         className={`text-sm max-w-40 truncate ${
+          //           theme === "dark" ? "text-gray-400" : "text-gray-500"
+          //         } `}
+          //       >
+          //         {contact?.conversation?.lastMessage?.content}
+          //       </p>
+          //       {contact?.conversation?.unreadCount?.[user?._id] > 0 && (
+          //         <p
+          //           className={`text-sm font-semibold h-6 w-6 flex items-center justify-center bg-yellow-500  ${
+          //             theme === "dark" ? "text-gray-800" : "text-gray-500"
+          //           } rounded-full`}
+          //         >
+          //           {contact?.conversation?.unreadCount?.[user?._id]}
+          //         </p>
+          //       )}
+          //     </div>
+          //   </div>
+          // </motion.div>
+
           <motion.div
             key={contact?._id}
             onClick={() => setSelectedContact(contact)}
-            className={` p-3 flex items-center cursor-pointer${
+            className={`p-3 flex items-center cursor-pointer ${
               theme === "dark"
                 ? selectedContact?._id === contact?._id
                   ? "bg-gray-700"
-                  : " hover:bg-gray-800"
+                  : "hover:bg-gray-800"
                 : selectedContact?._id === contact?._id
-                ? " bg-gray-200 "
+                ? "bg-gray-200"
                 : "hover:bg-gray-100"
             }`}
           >
+            {/* Avatar */}
             <img
               src={contact?.avatar}
-              alt={contact?.avatar}
-              className="w-12 h-12 rounded-full"
+              alt={contact?.username}
+              className="w-10 h-10 rounded-full object-cover"
             />
-            <div className="ml-3 flex-1">
-              <div className="flex justify-between items-baseline">
-                <h2
-                  className={`font-semibold capitalize ${
-                    theme === "dark" ? "text-white" : "text-black"
+
+            {/* Middle Section */}
+            <div className="ml-3 flex-1 min-w-0">
+              <h2
+                className={`font-semibold capitalize truncate ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+              >
+                {contact?.username}
+              </h2>
+              <p
+                className={`text-sm truncate ${
+                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                {contact?.conversation?.lastMessage?.content}
+              </p>
+            </div>
+
+            {/* Right Section (time + unread) */}
+            <div className="ml-2 flex flex-col items-end justify-between">
+              {contact?.conversation && (
+                <span
+                  className={`text-xs mb-1 ${
+                    theme === "dark" ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  {contact?.username}
-                </h2>
-                {contact?.conversation && (
-                  <span
-                    className={`text-xs ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
-                    {formatTimestamp(
-                      contact?.conversation?.lastMessage?.createdAt
-                    )}
-                  </span>
-                )}
-              </div>
-              <div className="flex max-w-80 justify-between items-baseline">
-                <p
-                  className={`text-sm max-w-40 truncate ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
-                  } `}
+                  {formatTimestamp(
+                    contact?.conversation?.lastMessage?.createdAt
+                  )}
+                </span>
+              )}
+              {contact?.conversation?.unreadCount?.[user?._id] > 0 && (
+                <span
+                  className={`text-sm font-semibold h-6 w-6 flex items-center justify-center rounded-full ${
+                    theme === "dark"
+                      ? "bg-green-500 text-white"
+                      : "bg-green-500 text-white"
+                  }`}
                 >
-                  {contact?.conversation?.lastMessage?.content}
-                </p>
-                {contact?.conversation?.unreadCount?.[user?._id] > 0 && (
-                  <p
-                    className={`text-sm font-semibold h-6 w-6 flex items-center justify-center bg-yellow-500  ${
-                      theme === "dark" ? "text-gray-800" : "text-gray-500"
-                    } rounded-full`}
-                  >
-                    {contact?.conversation?.unreadCount?.[user?._id]}
-                  </p>
-                )}
-              </div>
+                  {contact?.conversation?.unreadCount?.[user?._id]}
+                </span>
+              )}
             </div>
           </motion.div>
         ))}

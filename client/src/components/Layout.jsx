@@ -55,7 +55,7 @@ const Layout = ({
             </motion.div>
           )}
 
-          {(!selectedContact || !isMobile) && (
+          {(selectedContact || !isMobile) && (
             <motion.div
               key="chatwindow"
               initial={{ x: isMobile ? "-100%" : 0 }}

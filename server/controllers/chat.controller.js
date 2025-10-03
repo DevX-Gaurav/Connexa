@@ -5,9 +5,9 @@ import { uploadToCloudinary } from "../Config/cloudinary.js";
 
 const sendMessage = async (req, res) => {
   try {
-    const { senderId, recieverId, content, messageStatus } = req.body;
+    const { senderId, receiverId, content, messageStatus } = req.body;
     const file = req.file;
-    const participants = [senderId, recieverId].sort();
+    const participants = [senderId, receiverId].sort();
     /* check if participants already exists or not */
     let conversation = await Conversation.findOne({
       participants: participants,
@@ -51,7 +51,7 @@ const sendMessage = async (req, res) => {
     const message = new Message({
       conversation: conversation?._id,
       sender: senderId,
-      reciever: recieverId,
+      receiver: receiverId,
       content,
       contentType,
       imageOrVideoUrl,
@@ -61,22 +61,22 @@ const sendMessage = async (req, res) => {
     if (message?.content) conversation.lastMessage = message?._id;
     /* conversation.unreadCount += 1; */
     conversation.unreadCount.set(
-      recieverId,
-      (conversation.unreadCount.get(recieverId) || 0) + 1
+      receiverId,
+      (conversation.unreadCount.get(receiverId) || 0) + 1
     );
     conversation.updatedAt = new Date();
     await conversation.save();
 
     const populateMessage = await Message.findOne(message?._id)
       .populate("sender", "username avatar")
-      .populate("reciever", "username avatar");
+      .populate("receiver", "username avatar");
 
     /* emit socket event for realtime*/
     if (req.io && req.socketUserMap) {
       /* broadcast to all the connecting users except the user itself. */
-      const recieverSocketId = req.socketUserMap.get(recieverId);
-      if (recieverSocketId) {
-        req.io.to(recieverSocketId).emit("recieved_message", populateMessage);
+      const receiverSocketId = req.socketUserMap.get(receiverId);
+      if (receiverSocketId) {
+        req.io.to(receiverSocketId).emit("recieved_message", populateMessage);
         message.messageStatus = "delivered";
         await message.save();
       }
@@ -100,7 +100,7 @@ const getAllConversation = async (req, res) => {
       .populate({
         path: "lastMessage",
         populate: {
-          path: "sender reciever",
+          path: "sender receiver",
           select: "username avatar",
         },
       })
@@ -126,13 +126,13 @@ const getMessage = async (req, res) => {
     }
     const messages = await Message.find({ conversation: conversationId })
       .populate("sender", "username avatar")
-      .populate("reciever", "username avatar")
+      .populate("receiver", "username avatar")
       .sort("createdAt");
 
     await Message.updateMany(
       {
         conversation: conversationId,
-        reciever: userId,
+        receiver: userId,
         messageStatus: { $in: ["send", "delivered"] },
       },
       { $set: { messageStatus: "read" } }
@@ -158,13 +158,13 @@ const markAsRead = async (req, res) => {
     /* get relevant message to determine senders */
     let messages = await Message.find({
       _id: { $in: messageIds },
-      reciever: userId,
+      receiver: userId,
     });
 
     await Message.updateMany(
       {
         _id: { $in: messageIds },
-        reciever: userId,
+        receiver: userId,
       },
       { $set: { messageStatus: "read" } }
     );
@@ -207,7 +207,7 @@ const deleteMessage = async (req, res) => {
     /* emit socket event */
     if (req.io && req.socketUserMap) {
       const receiverSocketId = req.socketUserMap.get(
-        message.reciever.toString()
+        message.receiver.toString()
       );
       if (receiverSocketId) {
         req.io.to(receiverSocketId).emit("message_deleted", messageId);

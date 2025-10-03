@@ -21,4 +21,3 @@ const useLoginStore = create(
 );
 
 export default useLoginStore;
-

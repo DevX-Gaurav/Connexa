@@ -169,7 +169,7 @@ const getAllUserExceptMe = async (req, res) => {
         })
           .populate({
             path: "lastMessage",
-            select: "content createdAt sender reciever",
+            select: "content createdAt sender receiver",
           })
           .lean();
 

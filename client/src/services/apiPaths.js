@@ -13,15 +13,17 @@ export const API_PATHS = {
   CHAT: {
     SEND_MESSAGE: "/api/chat/send-message" /* post */,
     GET_ALL_CONVERSATION: "/api/chat/conversation" /* get */,
-    GET_MESSAGE: "/api/chat/conversation/:conversationId/messages" /* get */,
+    GET_MESSAGE: (conversationId) =>
+      `/api/chat/conversation/${conversationId}/messages` /* get */,
     MARK_AS_READ: "/api/chat/messages/read" /* put */,
-    DELETE_MESSAGE: "/api/chat/messages/:messageId" /* delete */,
+    DELETE_MESSAGE: (messageId) =>
+      `/api/chat/messages/${messageId}` /* delete */,
   },
 
   STATUS: {
     CREATE_STATUS: "/api/status/" /* post */,
     GET_STATUS: "/api/status/" /* get */,
-    VIEW_STATUS: "/api/status/:statusId/view" /* put */,
-    DELETE_STATUS: "/api/status/:statusId" /* delete */,
+    VIEW_STATUS: (statusId) => `/api/status/${statusId}/view` /* put */,
+    DELETE_STATUS: (statusId) => `/api/status/${statusId} ` /* delete */,
   },
 };

@@ -5,7 +5,6 @@ import ChatList from "../pages/chatSection/ChatList";
 
 import { getAllUsers } from "../services/user.service";
 const Home = () => {
-  
   const [allUsers, setAllUsers] = useState([]);
   const getAllUser = async () => {
     try {
@@ -32,7 +31,7 @@ const Home = () => {
         transition={{ duration: 0.5 }}
         className="h-full"
       >
-        <ChatList contacts={allUsers}  />
+        <ChatList contacts={allUsers} />
       </motion.div>
     </Layout>
   );
