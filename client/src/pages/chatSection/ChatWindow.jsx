@@ -42,7 +42,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
   const { theme } = useThemeStore();
   const { user } = useUserStore();
   const {
-    conversation,
+    conversations,
     currenctConversation,
     messages,
     loading,
@@ -67,8 +67,8 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
   const isTyping = isUserTyping(selectedContact?._id);
 
   useEffect(() => {
-    if (selectedContact?._id && conversation?.data?.length > 0) {
-      const currentConv = conversation?.data?.find((conv) =>
+    if (selectedContact?._id && conversations?.data?.length > 0) {
+      const currentConv = conversations?.data?.find((conv) =>
         conv.participants.some(
           (participant) => participant._id === selectedContact?._id
         )
@@ -77,7 +77,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
         fetchMessage(currentConv._id);
       }
     }
-  }, [selectedContact, conversation]);
+  }, [selectedContact, conversations]);
 
   useEffect(() => {
     fetchConversation();
@@ -299,7 +299,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
             {renderDateSeparator(new Date(date))}
             {msgs
               .filter(
-                (msg) => msg.conversation === selectedContact?.conversation?._id
+                (msg) => msg.conversations === selectedContact?.conversations?._id
               )
               .map((msg) => (
                 <MessageBubble

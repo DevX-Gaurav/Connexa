@@ -4,7 +4,8 @@ import axiosInstance from "../services/url.service";
 import { API_PATHS } from "../services/apiPaths";
 
 export const useChatStore = create((set, get) => ({
-  conversation: [],
+  conversations: [],
+
   currenctConversation: null,
   messages: [],
   loading: false,
@@ -17,6 +18,10 @@ export const useChatStore = create((set, get) => ({
     const socket = getSocket();
     if (!socket) return;
 
+    /* taking currentUser value */
+    const currentUser = get().currentUser;
+    if (!currentUser || !currentUser._id) return; // prevent null errors
+
     /* remove existing listeners to prevent duplicate handlers */
     socket.off("recieve_message");
     socket.off("user_typing");
@@ -26,7 +31,9 @@ export const useChatStore = create((set, get) => ({
     socket.off("message_deleted");
 
     /* listen for incomming messages */
-    socket.on("recieve_message", (message) => {});
+    socket.on("recieve_message", (message) => {
+      get().recieveMessage(message);
+    });
 
     /* confirm message delivery */
     socket.on("message_send", (message) => {
@@ -126,7 +133,7 @@ export const useChatStore = create((set, get) => ({
       const { data } = await axiosInstance.get(
         API_PATHS.CHAT.GET_ALL_CONVERSATION
       );
-      set({ conversation: data, loading: false });
+      set({ conversations: data, loading: false });
       get().initSocketListener();
       return data;
     } catch (error) {
@@ -150,7 +157,7 @@ export const useChatStore = create((set, get) => ({
       const messageArray = data.data || data || [];
       set({
         messages: messageArray,
-        currenctConversation: conversationId,
+        currentConversation: conversationId,
         loading: false,
       });
 
@@ -177,17 +184,17 @@ export const useChatStore = create((set, get) => ({
     const messageStatus = formData.get("messageStatus");
 
     const socket = getSocket();
-    const { conversation } = get();
+    const { conversations } = get();
     let conversationId = null;
-    if (conversation?.data?.length > 0) {
-      const conversationdata = conversation.data.find(
+    if (conversations?.data?.length > 0) {
+      const conversationdata = conversations.data.find(
         (conv) =>
           conv.participants.some((p) => p._id === senderId) &&
           conv.participants.some((p) => p._id === receiverId)
       );
       if (conversationdata) {
         conversationId = conversationdata._id;
-        set({ currenctConversation: conversationId });
+        set({ currentConversation: conversationId });
       }
     }
 
@@ -197,7 +204,7 @@ export const useChatStore = create((set, get) => ({
       _id: tempId,
       sender: { _id: senderId },
       receiver: { _id: receiverId },
-      conversation: conversationId,
+      conversations: conversationId,
       imageOrVideoUrl:
         media && typeof media !== "string" ? URL.createObjectURL(media) : null,
       content: content,
@@ -221,7 +228,7 @@ export const useChatStore = create((set, get) => ({
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       const messageData = data.data || data;
-      /* replacce optimisitic message with the real one */
+      /* replace optimisitic message with the real one */
       set((state) => ({
         messages: state.messages.map((msg) =>
           msg._id === tempId ? messageData : msg
@@ -250,7 +257,7 @@ export const useChatStore = create((set, get) => ({
 
     if (message.conversation === currenctConversation) {
       set((state) => ({
-        messages: [...state.message, message],
+        messages: [...state.messages, message],
       }));
 
       /* automatically mark as read. */
@@ -304,7 +311,7 @@ export const useChatStore = create((set, get) => ({
       console.log("message mark as read", data);
 
       set((state) => ({
-        messages: state.message.map((msg) =>
+        messages: state.messages.map((msg) =>
           unreadIds.includes(msg._id) ? { ...msg, messageStatus: "read" } : msg
         ),
       }));
@@ -338,8 +345,15 @@ export const useChatStore = create((set, get) => ({
   /* add / change reactions */
   addReactions: async (messageId, emoji) => {
     const socket = getSocket();
-    const { currentUser } = get();
-    if (socket && currentUser) {
+    const currentUser = get().currentUser;
+    console.log(
+      "messageId and emoji from the addReactions client",
+      messageId,
+      emoji,
+      currentUser
+    );
+
+    if (socket && !currentUser) {
       socket.emit("add_reaction", {
         messageId,
         emoji,
@@ -396,12 +410,13 @@ export const useChatStore = create((set, get) => ({
 
   cleanUp: () => {
     set({
-      conversation: [],
+      conversations: [],
       currenctConversation: null,
       messages: [],
       onlineUsers: [],
       onlineUsers: new Map(),
       typingUsers: new Map(),
+      currentUser: null,
     });
   },
 }));

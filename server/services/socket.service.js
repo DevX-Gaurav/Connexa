@@ -143,10 +143,11 @@ const initializeSocket = (server) => {
     socket.on(
       "add_reaction",
       async ({ messageId, emoji, userId: reactionUserId }) => {
+        console.log("messageId", messageId);
+
         try {
           const message = await Message.findById(messageId);
-          console.log('message from add reactions',message);
-          
+          console.log("message from add reactions", message);
           if (!message) return;
           const existingIndex = message.reactions.findIndex(
             (r) => r.user.toString() === reactionUserId

@@ -34,7 +34,7 @@ const messageSchema = new mongoose.Schema(
           type: mongoose.Schema.ObjectId,
           ref: "User",
         },
-        emoji: String,
+        emoji: { type: String },
       },
     ],
     messageStatus: {

@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaCheck,
   FaCheckDouble,
@@ -28,7 +28,6 @@ const MessageBubble = ({
   const reactionsMenuRef = useRef(null);
   const emojiPickerRef = useRef(null);
   const quickReactions = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
-
   const isUserMessage = message.sender._id === currentUser?._id;
   const bubbleClass = isUserMessage ? ` chat-end` : ` chat-start`;
   const bubbleContentClass = isUserMessage

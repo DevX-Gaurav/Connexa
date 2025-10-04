@@ -13,7 +13,6 @@ const ChatList = ({ contacts }) => {
   const selectedContact = useLayoutStore((state) => state.selectedContact);
   const { user } = useUserStore();
   const { theme, setTheme } = useThemeStore();
-
   const [searchTerms, setSearchTerms] = useState("");
 
   const filteredContacts = contacts
@@ -72,68 +71,6 @@ const ChatList = ({ contacts }) => {
 
       <div className="overflow-y-auto h-[calc(100vh-120px)] ">
         {filteredContacts.map((contact) => (
-          // <motion.div
-          //   key={contact?._id}
-          //   onClick={() => setSelectedContact(contact)}
-          //   className={` p-3 flex items-center cursor-pointer${
-          //     theme === "dark"
-          //       ? selectedContact?._id === contact?._id
-          //         ? "bg-gray-700"
-          //         : " hover:bg-gray-800"
-          //       : selectedContact?._id === contact?._id
-          //       ? " bg-gray-200 "
-          //       : "hover:bg-gray-100"
-          //   }`}
-          // >
-
-          //   <img
-          //     src={contact?.avatar}
-          //     alt={contact?.avatar}
-          //     className="w-10 h-10 rounded-full object-cover"
-          //   />
-
-          //   <div className="ml-3 min-w-0 flex-1">
-          //     <div className="flex justify-between items-baseline">
-          //       <h2
-          //         className={`font-semibold capitalize ${
-          //           theme === "dark" ? "text-white" : "text-black"
-          //         }`}
-          //       >
-          //         {contact?.username}
-          //       </h2>
-          //       {contact?.conversation && (
-          //         <span
-          //           className={`text-xs ${
-          //             theme === "dark" ? "text-gray-400" : "text-gray-500"
-          //           }`}
-          //         >
-          //           {formatTimestamp(
-          //             contact?.conversation?.lastMessage?.createdAt
-          //           )}
-          //         </span>
-          //       )}
-          //     </div>
-          //     <div className="flex max-w-80 justify-between items-baseline">
-          //       <p
-          //         className={`text-sm max-w-40 truncate ${
-          //           theme === "dark" ? "text-gray-400" : "text-gray-500"
-          //         } `}
-          //       >
-          //         {contact?.conversation?.lastMessage?.content}
-          //       </p>
-          //       {contact?.conversation?.unreadCount?.[user?._id] > 0 && (
-          //         <p
-          //           className={`text-sm font-semibold h-6 w-6 flex items-center justify-center bg-yellow-500  ${
-          //             theme === "dark" ? "text-gray-800" : "text-gray-500"
-          //           } rounded-full`}
-          //         >
-          //           {contact?.conversation?.unreadCount?.[user?._id]}
-          //         </p>
-          //       )}
-          //     </div>
-          //   </div>
-          // </motion.div>
-
           <motion.div
             key={contact?._id}
             onClick={() => setSelectedContact(contact)}
@@ -174,7 +111,7 @@ const ChatList = ({ contacts }) => {
 
             {/* Right Section (time + unread) */}
             <div className="ml-2 flex flex-col items-end justify-between">
-              {contact?.conversation && (
+              {contact?.conversation?.lastMessage?.createdAt && (
                 <span
                   className={`text-xs mb-1 ${
                     theme === "dark" ? "text-gray-400" : "text-gray-500"

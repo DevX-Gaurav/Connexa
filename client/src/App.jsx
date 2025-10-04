@@ -7,14 +7,17 @@ import { useChatStore } from "./store/chatStore";
 
 const App = () => {
   const user = useUserStore();
+  console.log('user from app', user);
+  
   const { setCurrentUser, initSocketListener, cleanUp } = useChatStore();
 
   useEffect(() => {
     if (user?._id) {
+      setCurrentUser(user); 
       const socket = initializeSocket();
 
       if (socket) {
-        setCurrentUser(user);
+        
         initSocketListener();
       }
     }
