@@ -41,6 +41,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
 
   const { theme } = useThemeStore();
   const { user } = useUserStore();
+
   const {
     conversations,
     currenctConversation,
@@ -86,6 +87,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: "auto" }); /* behavior */
   };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -193,12 +195,10 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
       }, {})
     : {};
 
-  const handleReaction = (messageId, emoji) => {
-    console.log("message and emoji", messageId, emoji);
-    addReactions(messageId, emoji);
+  const handleReaction = (messageId, emoji, currentUser) => {
+    // console.log("message and emoji", messageId, emoji, currentUser);
+    addReactions(messageId, emoji, currentUser);
   };
-
-  // console.log("selected contact", selectedContact);
 
   if (!selectedContact) {
     return (
@@ -299,7 +299,8 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
             {renderDateSeparator(new Date(date))}
             {msgs
               .filter(
-                (msg) => msg.conversations === selectedContact?.conversations?._id
+                (msg) =>
+                  msg.conversations === selectedContact?.conversations?._id
               )
               .map((msg) => (
                 <MessageBubble
@@ -408,14 +409,18 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
           }`}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => {
+          onKeyDown={(e) => {
             if (e.key === "Enter") {
+              e.preventDefault();
               handleSendMessage();
             }
           }}
           placeholder="Type a message"
         />
-        <button className="focus:outline-none" onClick={handleSendMessage}>
+        <button
+          className="focus:outline-none cursor-pointer"
+          onClick={handleSendMessage}
+        >
           <FaPaperPlane className="h-5 w-5 text-green-500" />
         </button>
       </div>

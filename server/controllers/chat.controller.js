@@ -32,9 +32,9 @@ const sendMessage = async (req, res) => {
         );
       }
       imageOrVideoUrl = uploadFile?.secure_url;
-      if (file.mimetype.startswith("image")) {
+      if (file.mimetype.startsWith("image")) {
         contentType = "image";
-      } else if (file.mimetype.startswith("video")) contentType = "video";
+      } else if (file.mimetype.startsWith("video")) contentType = "video";
       else {
         return response(
           res,
@@ -76,7 +76,7 @@ const sendMessage = async (req, res) => {
       /* broadcast to all the connecting users except the user itself. */
       const receiverSocketId = req.socketUserMap.get(receiverId);
       if (receiverSocketId) {
-        req.io.to(receiverSocketId).emit("recieved_message", populateMessage);
+        req.io.to(receiverSocketId).emit("receive_message", populateMessage);
         message.messageStatus = "delivered";
         await message.save();
       }

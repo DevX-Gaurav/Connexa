@@ -42,8 +42,10 @@ const MessageBubble = ({
           : "bg-[#d9fdd3] text-black "
       } `;
 
+  // console.log('currentUser from props', currentUser);
+
   const handleReact = (emoji) => {
-    onReact(message._id, emoji);
+    onReact(message._id, emoji, currentUser);
     setShowEmojiPicker(false);
     setShowReactions(false);
   };
@@ -99,7 +101,7 @@ const MessageBubble = ({
           <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
             <button
               onClick={() => setShowOptions((prev) => !prev)}
-              className={`p-1 rounded-full ${
+              className={`p-1 cursor-pointer rounded-full ${
                 theme === "dark" ? "text-white" : "text-gray-800"
               }`}
             >
@@ -115,7 +117,7 @@ const MessageBubble = ({
         >
           <button
             onClick={() => setShowReactions(!showReactions)}
-            className={` rounded-full ${
+            className={`cursor-pointer rounded-full ${
               theme === "dark"
                 ? "bg-[#202c33] hover:bg-[#202c33]/80"
                 : "bg-white hover:bg-gray-100"
@@ -141,7 +143,7 @@ const MessageBubble = ({
               <button
                 key={index}
                 onClick={() => handleReact(emoji)}
-                className="hover:scale-125 transition-transform p-1 "
+                className="hover:scale-125 cursor-pointer transition-transform p-1 "
               >
                 {emoji}
               </button>
@@ -157,7 +159,7 @@ const MessageBubble = ({
         )}
         {showEmojiPicker && (
           <div className="absolute left-0 mb-6 z-50" ref={emojiPickerRef}>
-            <div className="relative">
+            <div className="relative ">
               <EmojiPicker
                 onEmojiClick={(emojiObject) => {
                   handleReact(emojiObject.emoji);
@@ -166,7 +168,7 @@ const MessageBubble = ({
               />
               <button
                 onClick={() => setShowEmojiPicker(false)}
-                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 "
+                className="absolute  top-2 right-2 text-gray-500 hover:text-gray-700 "
               >
                 <RxCross2 />
               </button>
@@ -176,14 +178,14 @@ const MessageBubble = ({
 
         {message.reactions && message.reactions.length > 0 && (
           <div
-            className={`absolute -bottom-5 ${
+            className={`absolute  -bottom-5 ${
               isUserMessage ? "right-2" : " left-2"
             } ${
               theme === "dark" ? "bg-[#2a3942] " : "bg-gray-200"
-            } rounded-full px-2 shadow-md`}
+            } rounded-full px-2  shadow-md`}
           >
             {message.reactions.map((reaction, index) => (
-              <span className="mr-1" key={index}>
+              <span className=" mr-1" key={index}>
                 {reaction.emoji}
               </span>
             ))}
@@ -193,7 +195,7 @@ const MessageBubble = ({
         {showOptions && (
           <div
             ref={optionsRef}
-            className={`absolute top-8 right-1 z-50 w-36 rounded-xl shadow-lg py-2 text-wm ${
+            className={`absolute top-8 cursor-pointer right-1 z-50 w-36 rounded-xl shadow-lg py-2 text-wm ${
               theme === "dark"
                 ? "bg-[#1d1f1f] text-white "
                 : " bg-gray-100 text-black"
@@ -206,7 +208,7 @@ const MessageBubble = ({
                 }
                 setShowOptions(false);
               }}
-              className="flex items-center w-full px-4 py-2 gap-3 rounded-lg"
+              className="flex items-center cursor-pointer w-full px-4 py-2 gap-3 rounded-lg"
             >
               <FaRegCopy size={14} />
               <span className="">Copy</span>
@@ -218,7 +220,7 @@ const MessageBubble = ({
                   deletedMessage(message?._id);
                   setShowOptions(false);
                 }}
-                className="flex items-center w-full px-4 text-red-500 py-2 gap-3 rounded-lg"
+                className="flex cursor-pointer items-center w-full px-4 text-red-500 py-2 gap-3 rounded-lg"
               >
                 <FaTrashAlt size={14} className="text-red-500" />
                 <span className="">Delete</span>

@@ -5,25 +5,21 @@ import { API_PATHS } from "../services/apiPaths";
 
 export const useChatStore = create((set, get) => ({
   conversations: [],
-
-  currenctConversation: null,
+  currentConversation: null,
   messages: [],
   loading: false,
   error: null,
   onlineUsers: new Map(),
   typingUsers: new Map(),
+  currentUser: null,
 
   /* socket event listeners setup */
   initSocketListener: () => {
     const socket = getSocket();
     if (!socket) return;
 
-    /* taking currentUser value */
-    const currentUser = get().currentUser;
-    if (!currentUser || !currentUser._id) return; // prevent null errors
-
     /* remove existing listeners to prevent duplicate handlers */
-    socket.off("recieve_message");
+    socket.off("receive_message");
     socket.off("user_typing");
     socket.off("user_status");
     socket.off("message_send");
@@ -31,8 +27,8 @@ export const useChatStore = create((set, get) => ({
     socket.off("message_deleted");
 
     /* listen for incomming messages */
-    socket.on("recieve_message", (message) => {
-      get().recieveMessage(message);
+    socket.on("receive_message", (message) => {
+      get().receiveMessage(message);
     });
 
     /* confirm message delivery */
@@ -101,20 +97,20 @@ export const useChatStore = create((set, get) => ({
     });
 
     /* emit status check for all users in conversationn list */
-    const { conversations } = get();
+    const { conversations, currentUser } = get();
     if (conversations?.data?.length > 0) {
       conversations.data?.forEach((conv) => {
         const otherUser = conv.participants.find(
-          (p) => p._id !== get().currentUser._id
+          (p) => p._id !== currentUser?._id
         );
 
-        if (otherUser._id) {
+        if (otherUser?._id) {
           socket.emit("get_user_status", otherUser._id, (status) => {
             set((state) => {
               const newOnlineUsers = new Map(state.onlineUsers);
-              newOnlineUsers.set(state.userId, {
-                isOnline: state.isOnline,
-                lastSeen: state.lastSeen,
+              newOnlineUsers.set(status.userId, {
+                isOnline: status.isOnline,
+                lastSeen: status.lastSeen,
               });
               return { onlineUsers: newOnlineUsers };
             });
@@ -123,8 +119,6 @@ export const useChatStore = create((set, get) => ({
       });
     }
   },
-
-  setCurrentUser: (user) => set({ currentUser: user }),
 
   /* fetching all conversations */
   fetchConversation: async () => {
@@ -183,8 +177,7 @@ export const useChatStore = create((set, get) => ({
     const content = formData.get("content");
     const messageStatus = formData.get("messageStatus");
 
-    const socket = getSocket();
-    const { conversations } = get();
+    const { conversations, currentUser } = get();
     let conversationId = null;
     if (conversations?.data?.length > 0) {
       const conversationdata = conversations.data.find(
@@ -197,7 +190,6 @@ export const useChatStore = create((set, get) => ({
         set({ currentConversation: conversationId });
       }
     }
-
     /* temp messsage before actual response */
     const tempId = `temp-${Date.now()}`;
     const optimisticMessage = {
@@ -234,7 +226,11 @@ export const useChatStore = create((set, get) => ({
           msg._id === tempId ? messageData : msg
         ),
       }));
-      return messageData;
+      /* changes made */
+      const socket = getSocket();
+      if (socket) {
+        socket.emit("send_message", messageData);
+      }
     } catch (error) {
       console.error("error sending message from chatStore", error);
       set((state) => ({
@@ -248,14 +244,13 @@ export const useChatStore = create((set, get) => ({
   },
 
   /* recieve message */
-  recieveMessage: (message) => {
+  receiveMessage: (message) => {
     if (!message) return;
-    const { currenctConversation, currentUser } =
+    const { currentConversation, currentUser, messages } =
       get(); /* message as one of the selected  */
-    const messageExists = message.some((msg) => msg._id === message._id);
+    const messageExists = messages.some((msg) => msg._id === message._id);
     if (messageExists) return;
-
-    if (message.conversation === currenctConversation) {
+    if (message.conversations === currentConversation) {
       set((state) => ({
         messages: [...state.messages, message],
       }));
@@ -269,12 +264,12 @@ export const useChatStore = create((set, get) => ({
     /* update conversation preview and unread count*/
     set((state) => {
       const updateConversation = state.conversations?.data?.map((conv) => {
-        if (conv._id === message.conversation) {
+        if (conv._id === message.conversations) {
           return {
             ...conv,
             lastMessage: message,
             unreadCount:
-              message?.reciever?._id === currentUser?._id
+              message?.receiver?._id === currentUser?._id
                 ? (conv.unreadCount || 0) + 1
                 : conv.unreadCount || 0,
           };
@@ -282,7 +277,7 @@ export const useChatStore = create((set, get) => ({
         return conv;
       });
       return {
-        conversation: {
+        conversations: {
           ...state.conversations,
           data: updateConversation,
         },
@@ -292,13 +287,12 @@ export const useChatStore = create((set, get) => ({
 
   /* mark as read */
   markMessagesAsRead: async () => {
-    const { messages, currenctUser } = get();
-    if (!messages.length || !currenctUser) return;
+    const { messages, currentUser } = get();
+    if (!messages.length || !currentUser) return;
     const unreadIds = messages
       .filter(
         (msg) =>
-          msg.messageStatus !== "read" &&
-          msg.receiver?._id === currenctUser?._id
+          msg.messageStatus !== "read" && msg.receiver?._id === currentUser?._id
       )
       .map((msg) => msg._id)
       .filter(Boolean);
@@ -334,6 +328,11 @@ export const useChatStore = create((set, get) => ({
       set((state) => ({
         messages: state.messages?.filter((msg) => msg?._id !== messageId),
       }));
+      /* few changes made */
+      const socket = getSocket();
+      if (socket) {
+        socket.emit("delete_message", { deletedMessageId: messageId });
+      }
       return true;
     } catch (error) {
       console.error("deleting error message", error);
@@ -343,17 +342,19 @@ export const useChatStore = create((set, get) => ({
   },
 
   /* add / change reactions */
-  addReactions: async (messageId, emoji) => {
+  addReactions: async (messageId, emoji, currentUser) => {
     const socket = getSocket();
-    const currentUser = get().currentUser;
+
     console.log(
-      "messageId and emoji from the addReactions client",
+      "messageId",
       messageId,
+      " emoji:",
       emoji,
+      "currentUser",
       currentUser
     );
 
-    if (socket && !currentUser) {
+    if (socket && currentUser) {
       socket.emit("add_reaction", {
         messageId,
         emoji,
@@ -363,37 +364,37 @@ export const useChatStore = create((set, get) => ({
   },
 
   startTyping: (receiverId) => {
-    const { currenctConversation } = get();
+    const { currentConversation } = get();
     const socket = getSocket();
-    if (socket && currenctConversation && receiverId) {
+    if (socket && currentConversation && receiverId) {
       socket.emit("typing_start", {
-        conversationId: currenctConversation,
+        conversationId: currentConversation,
         receiverId,
       });
     }
   },
 
   stopTyping: (receiverId) => {
-    const { currenctConversation } = get();
+    const { currentConversation } = get();
     const socket = getSocket();
-    if (socket && currenctConversation && receiverId) {
+    if (socket && currentConversation && receiverId) {
       socket.emit("typing_stop", {
-        conversationId: currenctConversation,
+        conversationId: currentConversation,
         receiverId,
       });
     }
   },
 
   isUserTyping: (userId) => {
-    const { typingUsers, currenctConversation } = get();
+    const { typingUsers, currentConversation } = get();
     if (
-      !currenctConversation ||
-      !typingUsers.has(currenctConversation) ||
+      !currentConversation ||
+      !typingUsers.has(currentConversation) ||
       !userId
     ) {
       return false;
     }
-    return typingUsers.get(currenctConversation).has(userId);
+    return typingUsers.get(currentConversation).has(userId);
   },
 
   isUserOnline: (userId) => {
@@ -411,7 +412,7 @@ export const useChatStore = create((set, get) => ({
   cleanUp: () => {
     set({
       conversations: [],
-      currenctConversation: null,
+      currentConversation: null,
       messages: [],
       onlineUsers: [],
       onlineUsers: new Map(),

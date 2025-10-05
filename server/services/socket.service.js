@@ -17,7 +17,7 @@ const initializeSocket = (server) => {
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     },
-    pingTimeout: 60000 /* disconnect inactive user or sockets after 60s */,
+    pingTimeout: 60000,
   });
 
   /* when a new socket connection is established */
@@ -60,7 +60,7 @@ const initializeSocket = (server) => {
       try {
         const receiverSocketId = onlineUsers.get(message.receiver?._id);
         if (receiverSocketId) {
-          io.to(receiverSocketId).emit("recieve_message", message);
+          io.to(receiverSocketId).emit("receive_message", message);
         }
       } catch (error) {
         console.error("Error sending message: ", error);
@@ -89,6 +89,36 @@ const initializeSocket = (server) => {
         console.error("Error updating message read status: ", error);
       }
     });
+
+    
+
+    /* delete message and notify both users */
+    socket.on("delete_message", async ({ deletedMessageId }) => {
+      try {
+        // Optional: Verify/delete in DB if not already done by API
+        await Message.findByIdAndDelete(deletedMessageId);
+
+        // Get sender/receiver from message (assuming you pass or fetch)
+        const message = await Message.findById(deletedMessageId).populate(
+          "sender receiver"
+        );
+        if (!message) return;
+
+        const senderSocket = onlineUsers.get(message.sender._id.toString());
+        const receiverSocket = onlineUsers.get(message.receiver._id.toString());
+
+        const deleteEvent = { deletedMessageId };
+
+        if (senderSocket)
+          io.to(senderSocket).emit("message_deleted", deleteEvent);
+        if (receiverSocket)
+          io.to(receiverSocket).emit("message_deleted", deleteEvent);
+      } catch (error) {
+        console.error("Error handling message delete: ", error);
+      }
+    });
+
+
 
     /* handle typing start event and autostops after 3 sec */
     socket.on("typing_start", ({ conversationId, receiverId }) => {
@@ -143,14 +173,16 @@ const initializeSocket = (server) => {
     socket.on(
       "add_reaction",
       async ({ messageId, emoji, userId: reactionUserId }) => {
-        console.log("messageId", messageId);
+        console.log("messageId from backend socketService", messageId);
+        console.log("userId from backend socketService", userId);
 
         try {
           const message = await Message.findById(messageId);
           console.log("message from add reactions", message);
           if (!message) return;
+
           const existingIndex = message.reactions.findIndex(
-            (r) => r.user.toString() === reactionUserId
+            (r) => r.user?._id.toString() === reactionUserId
           );
 
           if (existingIndex > -1) {

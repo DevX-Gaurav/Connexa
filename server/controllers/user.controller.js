@@ -111,7 +111,7 @@ const updateProfile = async (req, res) => {
       console.log("uploadResult", uploadResult);
       user.avatar = uploadResult?.secure_url;
     } else if (req.body.avatar) {
-      user.avatar = req.body.avatar;
+      user.avatar = req.body?.avatar;
     }
     if (username) user.username = username;
     if (agreed !== undefined)
