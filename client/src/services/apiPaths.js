@@ -25,5 +25,7 @@ export const API_PATHS = {
     GET_STATUS: "/api/status/" /* get */,
     VIEW_STATUS: (statusId) => `/api/status/${statusId}/view` /* put */,
     DELETE_STATUS: (statusId) => `/api/status/${statusId} ` /* delete */,
+    // GET_STATUS_VIEWERS: (statusId) =>
+    //   `/api/status/${statusId}/viewers ` /* get */,
   },
 };
