@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import Status from "../models/status.model.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
+import handleVideoCallEvent from "./videoCall.service.js";
 
 /* map to store all the online user->userId, socketId */
 const onlineUsers = new Map();
@@ -29,6 +30,7 @@ const initializeSocket = (server) => {
     socket.on("user_connected", async (connectingUserId) => {
       try {
         userId = connectingUserId;
+        socket.userId = userId;
         onlineUsers.set(userId, socket.id);
         socket.join(userId); /* join a personal room for direct emits */
 
@@ -90,8 +92,6 @@ const initializeSocket = (server) => {
       }
     });
 
-    
-
     /* delete message and notify both users */
     socket.on("delete_message", async ({ deletedMessageId }) => {
       try {
@@ -117,8 +117,6 @@ const initializeSocket = (server) => {
         console.error("Error handling message delete: ", error);
       }
     });
-
-
 
     /* handle typing start event and autostops after 3 sec */
     socket.on("typing_start", ({ conversationId, receiverId }) => {
@@ -227,6 +225,9 @@ const initializeSocket = (server) => {
         }
       }
     );
+
+    /* handle video call events */
+    handleVideoCallEvent(socket, io, onlineUsers);
 
     /* handle disconnection and mark user offline */
     const handleDisconnected = async () => {

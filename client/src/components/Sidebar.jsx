@@ -43,7 +43,7 @@ const Sidebar = () => {
       {/* to home route */}
       <Link
         to="/"
-        className={`${isMobile ? "" : "mb-8"} ${
+        className={`${isMobile ? "" : "mt-10 mb-8"} ${
           activeTab === "chats" &&
           "bg-gray-300 shadow-sm focus:outline-none p-2 rounded-full"
         }`}
@@ -86,9 +86,8 @@ const Sidebar = () => {
       {/* avatar logo */}
       <Link
         to="/user-profile"
-        className={`${isMobile ? "" : "mb-8"} ${
-          activeTab === "profile" &&
-          "bg-gray-300 shadow-sm focus:outline-none p-2 rounded-full"
+        className={`${isMobile ? "" : "mb-2"} ${
+          activeTab === "profile" && " focus:outline-none p-2 rounded-full"
         }`}
       >
         {user?.avatar ? (
@@ -140,17 +139,17 @@ const Sidebar = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className={`${
+      className={`border-r flex items-center py-4 shadow-lg ${
         isMobile
-          ? "fixed bottom-0 left-0 right-0 h-16 flex-row justify-around"
-          : "w-16 h-screen border-r-2 flex-col justify-between"
+          ? "fixed bottom-0 left-0 right-0 h-16 flex-row  justify-around"
+          : "w-16 h-screen  flex-col justify-between"
       }
         ${
           theme === "dark"
-            ? "bg-gray-800 border-gray-600"
-            : "bg-[rgb(239, 242 254)] border-gray-300"
+            ? "bg-gray-800/90 border-gray-900"
+            : "bg-[rgb(239,242,254)] border-gray-200"
         }
-         bg-opacity-90 flex items-center py-4 shadow-lg
+           
         `}
     >
       {" "}

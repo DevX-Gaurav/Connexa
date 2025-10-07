@@ -65,16 +65,16 @@ const Setting = () => {
             </div>
 
             <div
-              className={`flex items-center gap-4 p-3 ${
+              className={` items-center gap-4 p-3 ${
                 theme === "dark" ? "hover:bg-[#202c33]" : "hover:bg-gray-100"
               } rounded-lg cursor-pointer mb-4`}
             >
               <img
                 src={user?.avatar}
                 alt="profile"
-                className="w-12 h-12 rounded-full object-cover"
+                className="w-20 h-20 rounded-full object-cover"
               />
-              <div className="">
+              <div>
                 <h2 className="font-semibold">{user?.username}</h2>
                 <p className="text-sm text-gray-400">{user?.about} </p>
               </div>
@@ -91,7 +91,7 @@ const Setting = () => {
                   <Link
                     to={item.href}
                     key={item.label}
-                    className={`w-full flex items-center gap-3 p-2 rounded ${
+                    className={`w-full flex items-center gap-3 px-2 rounded ${
                       theme === "dark"
                         ? "text-white hover:bg-[#202c33]"
                         : "text-black hover:bg-gray-100"
@@ -99,7 +99,7 @@ const Setting = () => {
                   >
                     <item.icon className="h-5 w-5" />
                     <div
-                      className={`border-b ${
+                      className={` ${
                         theme === "dark" ? "border-gray-700" : "border-gray-200"
                       } w-full p-4`}
                     >
@@ -111,7 +111,7 @@ const Setting = () => {
                 {/* theme button */}
                 <button
                   onClick={toggleThemeDialog}
-                  className={`w-full p-4 flex items-center gap-3  rounded ${
+                  className={`w-full cursor-pointer p-2 flex items-center gap-3  rounded ${
                     theme === "dark"
                       ? "text-white hover:bg-[#202c33]"
                       : "text-black hover:bg-gray-100"
@@ -123,13 +123,17 @@ const Setting = () => {
                     <FaSun className="h-5 w-5" />
                   )}
                   <div
-                    className={`flex flex-col text-start border-b ${
+                    className={`flex flex-col gap-3 px-2 text-start  ${
                       theme === "dark" ? "border-gray-700" : "border-gray-200"
-                    } w-full p-2`}
+                    } w-full `}
                   >
                     Theme
-                    <span className="ml-auto tex-sm text-gray-400">
-                      {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                    <span
+                      className={`justify-center text-sm ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-900"
+                      } `}
+                    >
+                      ( {theme.charAt(0).toUpperCase() + theme.slice(1)} )
                     </span>
                   </div>
                 </button>
@@ -138,8 +142,8 @@ const Setting = () => {
                 onClick={handleLogout}
                 className={`w-full flex mt-10  items-center gap-3 p-2 rounded text-red-500 ${
                   theme === "dark"
-                    ? "text-white hover:bg-[#202c33]"
-                    : "text-black hover:bg-gray-100"
+                    ? " font-semibold hover:bg-[#202c33]"
+                    : "font-semibold hover:bg-gray-100"
                 }`}
               >
                 <FaSignInAlt className="h-5 w-5" />
