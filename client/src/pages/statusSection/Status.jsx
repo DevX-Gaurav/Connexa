@@ -6,7 +6,13 @@ import Layout from "../../components/Layout";
 import StatusPreview from "./StatusPreview";
 import { motion } from "framer-motion";
 import { RxCross2 } from "react-icons/rx";
-import { FaCamera, FaEllipsisH, FaPlus } from "react-icons/fa";
+import {
+  FaCamera,
+  FaEllipsisH,
+  FaEye,
+  FaPaperclip,
+  FaPlus,
+} from "react-icons/fa";
 
 import formatTimestamp from "../../utils/formatTime";
 import StatusList from "./StatusList";
@@ -30,11 +36,8 @@ const Status = () => {
     createStatus,
     viewStatus,
     deleteStatus,
-    getStatusViewers,
-    getGroupedStatus,
     getUserStatus,
     getOtherStatuses,
-    reset,
     clearError,
     initializeSocket,
     cleanUpSocket,
@@ -160,7 +163,7 @@ const Status = () => {
               : "bg-white text-black"
           }`}
         >
-          <h2 className="text-2xl font-semibold">Status</h2>
+          <h2 className="text-2xl font-normal font-serif">Status</h2>
         </div>
 
         {error && (
@@ -226,9 +229,9 @@ const Status = () => {
                       e.stopPropagation();
                       setShowCreateModal(true);
                     }}
-                    className="absolute bottom-0 right-0 bg-green-500 text-white p-1 rounded-full"
+                    className="absolute cursor-pointer bottom-0 right-0 bg-green-500 text-white p-1 rounded-full"
                   >
-                    <FaPlus className="h-2 w-2" />
+                    <FaPlus className="h-2 w-2 cursor-pointer" />
                   </button>
                 </>
               ) : (
@@ -237,26 +240,26 @@ const Status = () => {
                     e.stopPropagation();
                     setShowCreateModal(true);
                   }}
-                  className="absolute bottom-0 right-0 bg-green-500 text-white p-1 rounded-full"
+                  className="absolute bottom-0 right-0 bg-green-500 cursor-pointer text-white p-1 rounded-full"
                 >
-                  <FaPlus className="h-2 w-2" />
+                  <FaPlus className="h-2 w-2 cursor-pointer" />
                 </button>
               )}
             </div>
 
             <div className="flex flex-col items-start flex-1">
-              <p className="font-semibold">My Status</p>
+              <p className="font-serif font-semibold">My Status</p>
               <p
-                className={`text-sm ${
+                className={`text-sm font-serif font-medium ${
                   theme === "dark" ? "text-gray-400 " : "text-gray-600"
                 }`}
               >
                 {userStatuses
-                  ? `${userStatuses.statuses.length} status ${
+                  ? `${userStatuses?.statuses.length} status ${
                       userStatuses?.statuses.length > 1 ? "." : ""
                     } ${formatTimestamp(
-                      userStatuses.statuses[userStatuses.statuses.length - 1]
-                        .timestamp
+                      userStatuses?.statuses[userStatuses?.statuses.length - 1]
+                        .timestamps
                     )}`
                   : "Tap to add status update"}
               </p>
@@ -267,7 +270,7 @@ const Status = () => {
                 onClick={() => setShowOption(!showOption)}
               >
                 <FaEllipsisH
-                  className={`h-5 w-5 ${
+                  className={`h-5 w-5  ${
                     theme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}
                 />
@@ -278,7 +281,7 @@ const Status = () => {
           {/* options menu */}
           {showOption && userStatuses && (
             <div
-              className={` shadow-md p-2 ${
+              className={` flex font-serif font-normal shadow-md p-2 ${
                 theme === "dark" ? "bg-[rgb(17,27,33)]" : "bg-white"
               }`}
             >
@@ -287,7 +290,7 @@ const Status = () => {
                   setShowCreateModal(true);
                   setShowOption(false);
                 }}
-                className="w-full text-left text-green-500 py-2 hover:bg-gray-100 px-2 rounded-full flex items-center"
+                className="w-full cursor-pointer justify-center text-green-500 py-2 hover:bg-gray-100 px-2 rounded-full flex items-center"
               >
                 <FaCamera className="inline-block mr-2" />
                 Add Status
@@ -297,8 +300,9 @@ const Status = () => {
                   handleStatusPreview(userStatuses);
                   setShowOption(false);
                 }}
-                className="w-full text-left text-blue-500 py-2 hover:bg-gray-100 px-2 rounded-full "
+                className="w-full text-center cursor-pointer text-blue-500 py-2 hover:bg-gray-100 px-2 rounded-full "
               >
+                <FaEye className="inline-block mr-2" />
                 View Status
               </button>
             </div>
@@ -313,12 +317,12 @@ const Status = () => {
           {/* recent updated from other users */}
           {!loading && otherStatuses.length > 0 && (
             <div
-              className={`p-4 space-y-4 shadow-md mt-4 ${
+              className={`p-4 font-serif font-normal space-y-4 shadow-md mt-4 ${
                 theme === "dark" ? "bg-[rgb(17,27,33)]" : "bg-white"
               }`}
             >
               <h3
-                className={` font-semibold ${
+                className={` font-normal ${
                   theme === "dark" ? "text-gray-400" : "text-gray-500"
                 }`}
               >
@@ -413,16 +417,23 @@ const Status = () => {
                 }`}
                 row={3}
               />
+              <label
+                htmlFor="statusfile"
+                className={`p-2 rounded-sm cursor-pointer bg-green-500/50 text-gray-100  hover:bg-green-500  `}
+              >
+                Choose File
+                <input
+                  id="statusfile"
+                  type="file"
+                  accept="image/*,video/*"
+                  onChange={handleFileChange}
+                  className="mb-4 hidden"
+                />
+              </label>
 
-              <input
-                type="file"
-                accept="image/*,video/*"
-                onChange={handleFileChange}
-                className="mb-4 "
-              />
               <div className="flex justify-end space-x-3">
                 <button
-                  className="px-4 py-2 text-gray-500 hover:text-gray-700"
+                  className="px-4 py-2 bg-red-300 rounded-sm  text-white cursor-pointer hover:bg-red-500/90"
                   onClick={() => {
                     setShowCreateModal(false);
                     setNewStatus("");
@@ -434,7 +445,11 @@ const Status = () => {
                   Cancel
                 </button>
                 <button
-                  className="px-4 py-2 bg-green-500 text-white rounded  hover:bg-green-600 disabled:opacity-50"
+                  className={`px-4 py-2 bg-green-500 text-white rounded  hover:bg-green-600 disabled:opacity-50 ${
+                    loading || (!newStatus.trim() && !selectedFile)
+                      ? "cursor-not-allowed"
+                      : "cursor-pointer"
+                  }`}
                   onClick={handleCreateStatus}
                   disabled={loading || (!newStatus.trim() && !selectedFile)}
                 >

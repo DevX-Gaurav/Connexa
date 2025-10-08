@@ -19,6 +19,7 @@ const MessageBubble = ({
   currentUser,
   onReact,
   deletedMessage,
+  receiver,
 }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
@@ -29,20 +30,19 @@ const MessageBubble = ({
   const emojiPickerRef = useRef(null);
   const quickReactions = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
   const isUserMessage = message.sender._id === currentUser?._id;
-  const bubbleClass = isUserMessage ? ` chat-end` : ` chat-start`;
+  const bubbleClass = isUserMessage ? ` chat-end  ` : ` chat-start `;
   const bubbleContentClass = isUserMessage
-    ? `chat-bubble md:max-w-[50%] min-w-[130px] ${
+    ? `chat-bubble text-center  items-center my-4 flex justify-center md:max-w-[50%] min-w-[130px] ${
         theme === "dark"
           ? "bg-[#144d38] text-white "
-          : "bg-[#d9fdd3] text-black "
+          : "bg-[#b6d7a8] text-black "
       }`
-    : `chat chat-bubble md:max-w-[50%] min-w-[130px] ${
+    : ` chat-bubble text-center  items-center my-4 flex justify-center md:max-w-[50%] min-w-[130px] ${
         theme === "dark"
-          ? "bg-[#144d38] text-white "
-          : "bg-[#d9fdd3] text-black "
+          ? "bg-gray-400 text-black "
+          : "bg-gray-300 text-black  "
       } `;
 
-  // console.log('currentUser from props', currentUser);
 
   const handleReact = (emoji) => {
     onReact(message._id, emoji, currentUser);
@@ -63,6 +63,14 @@ const MessageBubble = ({
   if (message === 0) return;
   return (
     <div className={`chat ${bubbleClass}`}>
+      <div className="chat-image avatar">
+        <div className="w-10 rounded-full">
+          <img
+            alt="user"
+            src={isUserMessage ? currentUser?.avatar : receiver?.avatar}
+          />
+        </div>
+      </div>
       <div className={`${bubbleContentClass} relative group`} ref={messageRef}>
         <div className="flex justify-center gap-2">
           {message.contentType === "text" && (
@@ -130,7 +138,7 @@ const MessageBubble = ({
             onClick={() => setShowReactions(!showReactions)}
             className={`cursor-pointer rounded-full ${
               theme === "dark"
-                ? "bg-[#202c33] hover:bg-[#202c33]/80"
+                ? "bg-[#202c33]  hover:bg-[#202c33]/80"
                 : "bg-white hover:bg-gray-100"
             } shadow-lg `}
           >
@@ -145,7 +153,7 @@ const MessageBubble = ({
 
         {showReactions && (
           <div
-            className={`absolute -top-8 ${
+            className={` absolute -top-8 ${
               isUserMessage ? "right-0" : "left-65"
             } transform -translate-x-1/2  flex items-center bg-[#202c33]/90 rounded-full px-2 py-1.5 gap-1 shadow-lg z-50 `}
             ref={reactionsMenuRef}
@@ -154,7 +162,7 @@ const MessageBubble = ({
               <button
                 key={index}
                 onClick={() => handleReact(emoji)}
-                className="hover:scale-125 cursor-pointer transition-transform p-1 "
+                className="hover:scale-105 cursor-pointer transition-transform p-1 "
               >
                 {emoji}
               </button>
@@ -168,6 +176,10 @@ const MessageBubble = ({
             </button>
           </div>
         )}
+
+        
+        
+
         {showEmojiPicker && (
           <div className="absolute left-0 mb-6 z-50" ref={emojiPickerRef}>
             <div className="relative ">
@@ -189,14 +201,14 @@ const MessageBubble = ({
 
         {message.reactions && message.reactions.length > 0 && (
           <div
-            className={`absolute  -bottom-5 ${
-              isUserMessage ? "right-2" : " left-2"
+            className={`absolute  -bottom-6 ${
+              isUserMessage ? "right-2 -mr-4 " : " -mx-2 left-0 "
             } ${
-              theme === "dark" ? "bg-[#2a3942] " : "bg-gray-200"
-            } rounded-full px-2  shadow-md`}
+              theme === "dark" ? "" : ""
+            } rounded-full p-2 text-xl`}
           >
             {message.reactions.map((reaction, index) => (
-              <span className=" mr-1" key={index}>
+              <span className="rounded-full " key={index}>
                 {reaction.emoji}
               </span>
             ))}
@@ -245,3 +257,7 @@ const MessageBubble = ({
 };
 
 export default MessageBubble;
+
+
+
+

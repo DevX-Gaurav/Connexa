@@ -57,8 +57,8 @@ const useStatusStore = create((set, get) => ({
   fetchStatuses: async () => {
     set({ loading: true, error: null });
     try {
-      const { response } = await axiosInstance.get(API_PATHS.STATUS.GET_STATUS);
-      set({ statuses: response?.data || [], loading: false });
+      const { data } = await axiosInstance.get(API_PATHS.STATUS.GET_STATUS);
+      set({ statuses: data?.data || [], loading: false });
     } catch (error) {
       console.error("Error in fetching status", error);
       set({ error: error?.message, loading: false });
@@ -76,22 +76,22 @@ const useStatusStore = create((set, get) => ({
       if (statusData.content?.trim()) {
         formData.append("content", statusData?.content);
       }
-      const { response } = await axiosInstance.post(
+      const { data } = await axiosInstance.post(
         API_PATHS.STATUS.CREATE_STATUS,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
       /* add to status in local state */
-      if (response?.data) {
+      if (data?.data) {
         set((state) => ({
-          statuses: state.statuses.some((s) => s._id === response?.data._id)
+          statuses: state.statuses.some((s) => s._id === data?.data._id)
             ? state.statuses
-            : [response?.data, ...state.statuses],
+            : [data?.data, ...state.statuses],
         }));
       }
       set({ loading: false });
-      return response?.data;
+      return data?.data;
     } catch (error) {
       console.error("Error in creating status", error);
       set({ error: error.message, loading: false });
@@ -130,19 +130,19 @@ const useStatusStore = create((set, get) => ({
     }
   },
 
-  getStatusViewers: async (statusId) => {
-    try {
-      set({ loading: true, error: false });
-      const { response } = await axiosInstance.get(
-        API_PATHS.STATUS.GET_STATUS_VIEWERS(statusId)
-      );
-      return response.data;
-      set({ loading: false });
-    } catch (error) {
-      console.error("Error in getting the  status", error);
-      set({ error: error.message, loading: false });
-    }
-  },
+  // getStatusViewers: async (statusId) => {
+  //   try {
+  //     set({ loading: true, error: false });
+  //     const { data } = await axiosInstance.get(
+  //       API_PATHS.STATUS.GET_STATUS_VIEWERS(statusId)
+  //     );
+  //     set({ loading: false });
+  //     return data?.data;
+  //   } catch (error) {
+  //     console.error("Error in getting the  status", error);
+  //     set({ error: error.message, loading: false });
+  //   }
+  // },
 
   /* helper function for grouped status */
   getGroupedStatus: () => {
@@ -161,7 +161,7 @@ const useStatusStore = create((set, get) => ({
         id: status._id,
         media: status.content,
         contentType: status.contentType,
-        timestamp: status.createdAt,
+        timestamps: status.createdAt,
         viewers: status.viewers,
       });
       return acc;
@@ -178,7 +178,6 @@ const useStatusStore = create((set, get) => ({
       (contact) => contact.id !== userId
     );
   },
-  /* clear error */
   clearError: () => {
     set({ error: null });
   },

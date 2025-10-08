@@ -19,6 +19,8 @@ const createStatus = async (req, res) => {
       }
       mediaUrl = uploadFile?.secure_url;
       if (file.mimetype.startsWith("image")) {
+        finalContentType = "image";
+      } else if (file.mimetype.startsWith("video")) {
         finalContentType = "video";
       } else {
         return response(res, 400, "unsupported file type");
@@ -108,7 +110,7 @@ const viewStatus = async (req, res) => {
             totalViewers: updatedStatus.viewers.length,
             viewers: updatedStatus.viewers,
           };
-          res.io.to(statusOwnerSocketId).emit("status_viewed", viewData);
+          req.io.to(statusOwnerSocketId).emit("status_viewed", viewData);
         } else console.log("status owner not connected");
       }
     } else {

@@ -50,7 +50,7 @@ const Setting = () => {
           } `}
         >
           <div className="p-4">
-            <h1 className="text-xl font-semibold mb-4">Settings</h1>
+            <h1 className="text-2xl font-normal font-serif mb-4">Settings</h1>
             <div className="relative  mb-4">
               <FaSearch className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <input
@@ -65,7 +65,7 @@ const Setting = () => {
             </div>
 
             <div
-              className={` items-center gap-4 p-3 ${
+              className={` items-center gap-5 p-3 ${
                 theme === "dark" ? "hover:bg-[#202c33]" : "hover:bg-gray-100"
               } rounded-lg cursor-pointer mb-4`}
             >
@@ -74,19 +74,19 @@ const Setting = () => {
                 alt="profile"
                 className="w-20 h-20 rounded-full object-cover"
               />
-              <div>
-                <h2 className="font-semibold">{user?.username}</h2>
-                <p className="text-sm text-gray-400">{user?.about} </p>
+              <div className="">
+                <h2 className="font-serif font-bold">{user?.username}</h2>
+                <p className="text-sm  text-gray-400">{user?.about} </p>
               </div>
             </div>
 
             {/* menu items */}
-            <div className="h-[calc(100vh-280px)]  overflow-y-auto">
+            <div className="max-h-[calc(100vh-280px)]  overflow-y-auto">
               <div className="space-y-1">
                 {[
                   { icon: FaUser, label: "Account", href: "/user-profile" },
                   { icon: FaComment, label: "Chats", href: "/" },
-                  { icon: FaQuestionCircle, label: "Help", href: "/help" },
+                  { icon: FaQuestionCircle, label: "Help", href: "/" },
                 ].map((item) => (
                   <Link
                     to={item.href}
@@ -101,7 +101,7 @@ const Setting = () => {
                     <div
                       className={` ${
                         theme === "dark" ? "border-gray-700" : "border-gray-200"
-                      } w-full p-4`}
+                      } w-full font-serif font-medium p-4`}
                     >
                       {item.label}
                     </div>
@@ -111,7 +111,7 @@ const Setting = () => {
                 {/* theme button */}
                 <button
                   onClick={toggleThemeDialog}
-                  className={`w-full cursor-pointer p-2 flex items-center gap-3  rounded ${
+                  className={`w-full font-serif font-medium cursor-pointer p-2 flex items-center gap-3  rounded ${
                     theme === "dark"
                       ? "text-white hover:bg-[#202c33]"
                       : "text-black hover:bg-gray-100"
@@ -140,7 +140,7 @@ const Setting = () => {
               </div>
               <button
                 onClick={handleLogout}
-                className={`w-full flex mt-10  items-center gap-3 p-2 rounded text-red-500 ${
+                className={`w-full flex mt-10  font-serif  items-center gap-3 p-2 rounded text-red-500 ${
                   theme === "dark"
                     ? " font-semibold hover:bg-[#202c33]"
                     : "font-semibold hover:bg-gray-100"

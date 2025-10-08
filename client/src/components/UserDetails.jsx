@@ -98,7 +98,7 @@ const UserDetails = () => {
       >
         <div className="w-full rounded-lg p-6">
           <div className="flex items-center mb-6">
-            <h1 className="text-2xl font-bold">Profile</h1>
+            <h1 className="text-2xl font-normal font-serif">Profile</h1>
           </div>
           <div className="space-y-6">
             <div className="flex flex-col items-center">
@@ -159,7 +159,7 @@ const UserDetails = () => {
             >
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-500 text-start"
+                className="block text-sm font-serif font-medium text-gray-500 text-start"
               >
                 Your Name
               </label>
@@ -177,7 +177,7 @@ const UserDetails = () => {
                     onChange={(e) => setName(e.target.value)}
                   />
                 ) : (
-                  <span className="w-full px-3 py-2">
+                  <span className="w-full font-serif font-medium px-3 py-2">
                     {user?.username || name}
                   </span>
                 )}
@@ -232,7 +232,7 @@ const UserDetails = () => {
             >
               <label
                 htmlFor="about"
-                className="block text-sm font-medium text-gray-500 text-start"
+                className="block text-sm font-serif font-medium text-gray-500 text-start"
               >
                 About your self
               </label>
@@ -250,7 +250,7 @@ const UserDetails = () => {
                     onChange={(e) => setAbout(e.target.value)}
                   />
                 ) : (
-                  <span className="w-full px-3 py-2">
+                  <span className="w-full font-serif font-medium px-3 py-2">
                     {user?.about || about}
                   </span>
                 )}

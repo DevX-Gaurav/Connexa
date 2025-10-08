@@ -8,7 +8,7 @@ const StatusList = ({ contact, onPreview, theme }) => {
         <img
           src={contact?.avatar}
           alt={contact?.name}
-          className="h-14 w-14 rounded-full"
+          className="h-14 w-14 object-cover rounded-full"
         />
         <svg className="absolute top-0 left-0 w-14 h-14" viewBox="0 0 100 100">
           {contact.statuses.map((_, index) => {
@@ -31,7 +31,7 @@ const StatusList = ({ contact, onPreview, theme }) => {
         <p className="font-semibold">{contact?.name}</p>
         <p className="text-gray-500 text-sm">
           {formatTimestamp(
-            contact.statuses[contact.statuses.length - 1].timestamp
+            contact?.statuses[contact?.statuses.length - 1].timestamps
           )}
         </p>
       </div>

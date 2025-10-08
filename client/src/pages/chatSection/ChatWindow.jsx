@@ -258,7 +258,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
 
   return (
     <>
-      <div className="flex-1 h-screen w-full flex flex-col ">
+      <div className="flex-1 h-screen w-full flex flex-col overflow-x-hidden">
         <div
           className={`py-4  px-2 flex items-center ${
             theme === "dark"
@@ -279,7 +279,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
           />
 
           <div className="ml-3 flex-grow">
-            <h2 className="font-semibold text-start">
+            <h2 className="font-semibold font-serif  text-start">
               {selectedContact?.username}
             </h2>
 
@@ -300,22 +300,20 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
             )}
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 mx-4">
             <button
-              className="focus:outline-none"
+              className="focus:outline-none cursor-pointer"
               title={online ? "Start video Call" : "User is offline"}
               onClick={handleVideoCall}
             >
-              <FaVideo className="h-5 w-5 text-green-500 hover:text-green-600" />
+              <FaVideo className="h-10 w-10 text-green-500 hover:text-white rounded-full gap-2 px-2 hover:bg-green-600 " />
             </button>
-            <button className="focus:outline-none ">
-              <FaEllipsisV className="h-5 w-5" />
-            </button>
+            
           </div>
         </div>
 
         <div
-          className={` flex-1 p-4 overflow-y-auto ${
+          className={` flex-1  p-4 overflow-y-auto ${
             theme === "dark" ? "bg-[#191a1a]" : "bg-[rgb(241,236,229)]"
           }`}
         >
@@ -335,6 +333,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
                     currentUser={user}
                     onReact={handleReaction}
                     deletedMessage={deletedMessage}
+                    receiver={selectedContact}
                   />
                 ))}
             </React.Fragment>
@@ -423,7 +422,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
                     theme === "dark" ? "hover:bg-gray-500" : "hover:bg-gray-200"
                   }`}
                 >
-                  <FaImage className="mr-2" /> Image/Video
+                  <FaImage className="mr-2" /> Image
                 </button>
                 <button
                   onClick={() => fileInputRef.current.click()}
@@ -431,7 +430,7 @@ const ChatWindow = ({ selectedContact, setSelectedContact, isMobile }) => {
                     theme === "dark" ? "hover:bg-gray-500" : "hover:bg-gray-200"
                   }`}
                 >
-                  <FaFile className="mr-2" /> Documents
+                  <FaVideo className="mr-2" /> Video
                 </button>
               </div>
             )}

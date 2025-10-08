@@ -6,7 +6,7 @@ import useUserStore from "../store/useUserStore";
 import { FaCog, FaUserCircle, FaWhatsapp } from "react-icons/fa";
 import { MdRadioButtonChecked } from "react-icons/md";
 import { motion } from "framer-motion";
-
+import windowImg from "../assets/window.png";
 const Sidebar = () => {
   const { activeTab, setActiveTab, selectedContact } = useLayoutStore();
   const location = useLocation();
@@ -45,18 +45,20 @@ const Sidebar = () => {
         to="/"
         className={`${isMobile ? "" : "mt-10 mb-8"} ${
           activeTab === "chats" &&
-          "bg-gray-300 shadow-sm focus:outline-none p-2 rounded-full"
+          "object-cover focus:outline-none p-2 rounded-full"
         }`}
       >
-        <FaWhatsapp
-          className={`h-6 w-6 ${
+        <img
+          src={windowImg}
+          alt=""
+          className={`h-20  w-20  object-cover ${
             activeTab === "chats"
               ? theme === "dark"
                 ? "text-gray-800"
                 : ""
               : theme === "dark"
-              ? "text-gray-300"
-              : "text-gray-800"
+              ? "text-gray-800"
+              : ""
           }`}
         />
       </Link>
@@ -86,7 +88,7 @@ const Sidebar = () => {
       {/* avatar logo */}
       <Link
         to="/user-profile"
-        className={`${isMobile ? "" : "mb-2"} ${
+        className={`${isMobile ? "" : "mb-4"} ${
           activeTab === "profile" && " focus:outline-none p-2 rounded-full"
         }`}
       >
@@ -115,19 +117,16 @@ const Sidebar = () => {
       <Link
         to="/setting"
         className={`${isMobile ? "" : "mb-8"} ${
-          activeTab === "setting" &&
-          "bg-gray-300 shadow-sm focus:outline-none p-2 rounded-full"
+          activeTab === "setting" && " focus:outline-none p-2 rounded-full"
         }`}
       >
         <FaCog
           className={`h-6 w-6 ${
             activeTab === "setting"
               ? theme === "dark"
-                ? "text-gray-800"
-                : ""
-              : theme === "dark"
-              ? "text-gray-300"
-              : "text-gray-800"
+                ? "text-gray-300"
+                : "text-gray-800"
+              : ""
           }`}
         />
       </Link>

@@ -56,8 +56,6 @@ const Home = () => {
     };
   }, [socket]);
 
-  // console.log("allUsers", allUsers);
-
   return (
     <Layout>
       <motion.div
