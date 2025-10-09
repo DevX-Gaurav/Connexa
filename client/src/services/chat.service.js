@@ -14,7 +14,7 @@ export const initializeSocket = () => {
 
   socket = io(BACKEND_URI, {
     auth:{token},
-    withCredentials: true,
+    // withCredentials: true,
     transports: ["websocket", "polling"],
     reconnectionAttempts: 5,
     reconnectionDelay: 1000,
