@@ -3,6 +3,7 @@ import Status from "../models/status.model.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
 import handleVideoCallEvent from "./videoCall.service.js";
+import socketMiddleware from "../middleware/socketMiddleware.js";
 
 /* map to store all the online user->userId, socketId */
 const onlineUsers = new Map();
@@ -20,6 +21,9 @@ const initializeSocket = (server) => {
     },
     pingTimeout: 60000,
   });
+
+  /* socket middleware */
+  io.use(socketMiddleware);
 
   /* when a new socket connection is established */
   io.on("connection", (socket) => {

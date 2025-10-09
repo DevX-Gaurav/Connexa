@@ -3,6 +3,7 @@ import useUserStore from "../store/useUserStore";
 import { BASE_URI } from "./apiPaths";
 
 let socket = null;
+const token = localStorage.getItem("auth_token");
 
 export const initializeSocket = () => {
   if (socket) return socket;
@@ -12,6 +13,7 @@ export const initializeSocket = () => {
   const BACKEND_URI = BASE_URI;
 
   socket = io(BACKEND_URI, {
+    auth:{token},
     withCredentials: true,
     transports: ["websocket", "polling"],
     reconnectionAttempts: 5,
