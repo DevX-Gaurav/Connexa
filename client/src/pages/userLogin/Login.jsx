@@ -8,12 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useThemeStore from "../../store/themeStore";
 import { motion } from "framer-motion";
+import windowImage from "../../assets/window.png";
 import {
   FaArrowLeft,
   FaChevronDown,
   FaPlus,
   FaUser,
-  FaWhatsapp,
 } from "react-icons/fa";
 import Spinner from "../../utils/Spinner";
 import { sendOtp, updateProfile, verifyOtp } from "../../services/user.service";
@@ -273,16 +273,20 @@ const Login = () => {
       >
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
+          animate={{ scale: 2}}
           transition={{
             duration: 0.2,
             type: "spring",
             stiffness: 260,
             damping: 20,
           }}
-          className={`w-24 h-24 bg-green-500 rounded-full mx-auto mb-6 flex items-center justify-center`}
+          className={`w-24 h-24  rounded-full mx-auto mb-2 flex items-center justify-center`}
         >
-          <FaWhatsapp className="w-16 h-16 text-white" />
+          <img
+            src={windowImage}
+            alt="loader image"
+            className="w-20 h-20 object-cover"
+          />
         </motion.div>
 
         <h1
@@ -304,17 +308,17 @@ const Login = () => {
                 theme === "dark" ? "text-gray-300" : "text-gray-600"
               } mb-4 `}
             >
-              Enter your phone Number or email to recieve an Otp
+              Enter your Email or phone number to recieve an Otp
             </p>
             <div className="relative">
               <div className="flex">
                 <div className="relative w-1/3">
                   <button
-                    className={`flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center ${
+                    className={`flex-shrink-0 cursor-pointer z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center ${
                       theme === "dark"
-                        ? "text-white bg-gray-700 border border-gray-600"
-                        : "text-gray-900  bg-gray-100 border border-gray-300 "
-                    } rounded-s-lg  hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100  `}
+                        ? "text-white hover:bg-gray-700 bg-gray-700 border border-gray-600"
+                        : "text-gray-900 hover:bg-gray-200  bg-gray-100 border border-gray-300 "
+                    } rounded-s-lg   focus:ring-4 focus:outline-none focus:ring-gray-100  `}
                     onClick={() => setShowDropdown(!showDropdown)}
                   >
                     <span className="flex gap-1 ">
