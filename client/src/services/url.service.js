@@ -5,7 +5,7 @@ const getToken = () => localStorage.getItem("auth_token");
 const axiosInstance = axios.create({
   baseURL: BASE_URI,
   timeout: 80000,
-  // withCredentials: true,
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
