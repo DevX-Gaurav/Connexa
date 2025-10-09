@@ -3,10 +3,16 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  // service: "gmail",
+  // auth: {
+  //   user: process.env.EMAIL_USER,
+  //   pass: process.env.EMAIL_PASS,
+  // },
+  host: "smtp.sendgrid.net", // SendGrid SMTP
+  port: 587,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_USER, // literally "apikey" for SendGrid
+    pass: process.env.SENDGRID_API_KEY,
   },
 });
 transporter.verify((error, success) => {
