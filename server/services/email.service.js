@@ -1,24 +1,28 @@
 import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  // service: "gmail",
-  // auth: {
-  //   user: process.env.EMAIL_USER,
-  //   pass: process.env.EMAIL_PASS,
-  // },
-  host: "smtp.sendgrid.net", // SendGrid SMTP
-  port: 587,
-  auth: {
-    user: process.env.EMAIL_USER, // literally "apikey" for SendGrid
-    pass: process.env.SENDGRID_API_KEY,
-  },
-});
-transporter.verify((error, success) => {
-  if (error) console.log("Gmail services connection failed.");
-  else console.log("Gmail configured properly and ready to send email.");
-});
+// const transporter = nodemailer.createTransport({
+//   // service: "gmail",
+//   // auth: {
+//   //   user: process.env.EMAIL_USER,
+//   //   pass: process.env.EMAIL_PASS,
+//   // },
+
+//   // host: "smtp.sendgrid.net",
+//   // port: 587,
+//   // auth: {
+//   //   user: process.env.EMAIL_USER,
+//   //   pass: process.env.SENDGRID_API_KEY,
+//   // },
+// });
+// transporter.verify((error, success) => {
+//   if (error) console.log("Gmail services connection failed.");
+//   else console.log("Gmail configured properly and ready to send email.");
+// });
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendOtpToEmail = async (email, otp) => {
   const html = `
@@ -45,12 +49,26 @@ const sendOtpToEmail = async (email, otp) => {
     </div>
   `;
 
-  await transporter.sendMail({
+  // await transporter.sendMail({
+  //   from: `CONNEXA web <${process.env.EMAIL_USER}`,
+  //   to: email,
+  //   subject: "Your Connexa Verification Code.",
+  //   html,
+  // });
+
+  const message = {
     from: `CONNEXA web <${process.env.EMAIL_USER}`,
     to: email,
     subject: "Your Connexa Verification Code.",
     html,
-  });
+  };
+
+  sgMail
+    .send(message)
+    .then(() =>
+      console.log("Gmail configured properly and ready to send email.")
+    )
+    .catch(console.log("Gmail services connection failed."));
 };
 
 export default sendOtpToEmail;
