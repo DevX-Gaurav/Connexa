@@ -9,12 +9,7 @@ import { useForm } from "react-hook-form";
 import useThemeStore from "../../store/themeStore";
 import { motion } from "framer-motion";
 import windowImage from "../../assets/window.png";
-import {
-  FaArrowLeft,
-  FaChevronDown,
-  FaPlus,
-  FaUser,
-} from "react-icons/fa";
+import { FaArrowLeft, FaChevronDown, FaPlus, FaUser } from "react-icons/fa";
 import Spinner from "../../utils/Spinner";
 import { sendOtp, updateProfile, verifyOtp } from "../../services/user.service";
 import toast from "react-hot-toast";
@@ -273,7 +268,7 @@ const Login = () => {
       >
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: 2}}
+          animate={{ scale: 2 }}
           transition={{
             duration: 0.2,
             type: "spring",
@@ -308,9 +303,11 @@ const Login = () => {
                 theme === "dark" ? "text-gray-300" : "text-gray-600"
               } mb-4 `}
             >
-              Enter your Email or phone number to recieve an Otp
+              Enter your Email {/* or phone number to */} recieve an Otp
             </p>
-            <div className="relative">
+
+            {/* phone input box */}
+            {/* <div className="relative">
               <div className="flex">
                 <div className="relative w-1/3">
                   <button
@@ -405,12 +402,11 @@ const Login = () => {
             </div>
 
             {/* divider with or */}
-
-            <div className="flex items-center my-4">
+            {/*<div className="flex items-center my-4">
               <div className="flex-grow h-px bg-gray-300 " />
               <span className="mx-3 text-gray-500 text-sm font-medium">or</span>
               <div className="flex-grow h-px bg-gray-300" />
-            </div>
+            </div> */}
 
             {/* email input box */}
             <div
@@ -429,7 +425,7 @@ const Login = () => {
                 type="email"
                 {...loginRegister("email")}
                 value={email}
-                placeholder="Email (optional)"
+                placeholder=" Enter Your Email"
                 onChange={(e) => setEmail(e.target.value)}
                 className={`w-full bg-transparent focus:outline-none ${
                   theme === "dark" ? " text-white " : "text-black"
